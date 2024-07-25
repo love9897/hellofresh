@@ -6,23 +6,24 @@ services:
         build: .
         restart: unless-stopped
         volumes:
-            - ./:/server/http
+            - ./src:/server/http
         ports:
             - "8080:80"
             #- "443:443"
-        links:
+        depends_on:
             # - postgres
             # - redis
             - mysql
         environment:
             DEBUG: 'true'
+    
     mysql:
-        image: mysql:latest
+        image: mysql:5.7
         restart: unless-stopped
         ports:
             - "3306:3306"
         volumes:
-            - "./db:/docker-entrypoint-initdb.d"
+            - db_data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: rootpassword
             MYSQL_DATABASE: hellofresh
@@ -39,7 +40,8 @@ services:
             PMA_PASSWORD: hellofresh
         depends_on:
             - mysql
-    
+    volumes:
+        db_data:
     # postgres:
     #     image: onjin/alpine-postgres:9.5
     #     restart: unless-stopped

@@ -10,12 +10,16 @@ RUN sed -i -e "s/;clear_env\s*=\s*no/clear_env = no/g" /etc/php/7.1/fpm/pool.d/w
 ENV APP_DIR /server/http
 
 # Adds the application code to the image
-ADD . ${APP_DIR}
+ADD ./src ${APP_DIR}
 
 # Define current working directory.
 WORKDIR ${APP_DIR}
 
+# Copy all the files to the container 
+COPY ./src .
+
 # Cleanup
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 
 EXPOSE 80
